@@ -78,7 +78,7 @@ public class FacebookLoginPlugin implements MethodCallHandler {
                 break;
             case METHOD_LOG_EVENT:
                 String eventName = call.argument(ARG_EVENT_NAME);
-                Map<String, String> eventParams = call.argument(ARG_EVENT_PARAMS);
+                Map<String, Object> eventParams = call.argument(ARG_EVENT_PARAMS);
                 delegate.logEvent(eventName, eventParams, result);
                 break;
             default:
@@ -154,10 +154,17 @@ public class FacebookLoginPlugin implements MethodCallHandler {
             result.success(tokenMap);
         }
 
-        public void logEvent(String eventName, Map<String, String> eventParams, Result result) {
+        public void logEvent(String eventName, Map<String, Object> eventParams, Result result) {
             Bundle bundle = new Bundle();
-            for (Map.Entry<String, String> entry : eventParams.entrySet()) {
-                bundle.putString(entry.getKey(), entry.getValue());
+            for (Map.Entry<String, Object> entry : eventParams.entrySet()) {
+                Object value = entry.getValue();
+                if (value instanceof String) {
+                    bundle.putString(entry.getKey(), (String) value);
+                } else if (value instanceof Integer) {
+                    bundle.putInt(entry.getKey(), (Integer) value);
+                } else {
+                    bundle.putString(entry.getKey(), value.toString());
+                }
             }
             logger.logEvent(eventName, bundle);
             result.success(null);
