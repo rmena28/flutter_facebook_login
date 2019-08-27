@@ -1,7 +1,10 @@
 package com.roughike.facebooklogin.facebooklogin;
 
+import android.os.Bundle;
+
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 
@@ -23,9 +26,12 @@ public class FacebookLoginPlugin implements MethodCallHandler {
     private static final String METHOD_LOG_IN_WITH_PUBLISH_PERMISSIONS = "loginWithPublishPermissions";
     private static final String METHOD_LOG_OUT = "logOut";
     private static final String METHOD_GET_CURRENT_ACCESS_TOKEN = "getCurrentAccessToken";
+    private static final String METHOD_LOG_EVENT = "logEvent";
 
     private static final String ARG_LOGIN_BEHAVIOR = "behavior";
     private static final String ARG_PERMISSIONS = "permissions";
+    private static final String ARG_EVENT_NAME = "name";
+    private static final String ARG_EVENT_PARAMS = "params";
 
     private static final String LOGIN_BEHAVIOR_NATIVE_WITH_FALLBACK = "nativeWithFallback";
     private static final String LOGIN_BEHAVIOR_NATIVE_ONLY = "nativeOnly";
@@ -70,6 +76,11 @@ public class FacebookLoginPlugin implements MethodCallHandler {
             case METHOD_GET_CURRENT_ACCESS_TOKEN:
                 delegate.getCurrentAccessToken(result);
                 break;
+            case METHOD_LOG_EVENT:
+                String eventName = call.argument(ARG_EVENT_NAME);
+                Map<String, String> eventParams = call.argument(ARG_EVENT_PARAMS);
+                delegate.logEvent(eventName, eventParams, result);
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -102,12 +113,14 @@ public class FacebookLoginPlugin implements MethodCallHandler {
         private final CallbackManager callbackManager;
         private final LoginManager loginManager;
         private final FacebookLoginResultDelegate resultDelegate;
+        private final AppEventsLogger logger;
 
         public FacebookSignInDelegate(Registrar registrar) {
             this.registrar = registrar;
             this.callbackManager = CallbackManager.Factory.create();
             this.loginManager = LoginManager.getInstance();
             this.resultDelegate = new FacebookLoginResultDelegate(callbackManager);
+            this.logger = AppEventsLogger.newLogger(registrar.context());
 
             loginManager.registerCallback(callbackManager, resultDelegate);
             registrar.addActivityResultListener(resultDelegate);
@@ -139,6 +152,15 @@ public class FacebookLoginPlugin implements MethodCallHandler {
             Map<String, Object> tokenMap = FacebookLoginResults.accessToken(accessToken);
 
             result.success(tokenMap);
+        }
+
+        public void logEvent(String eventName, Map<String, String> eventParams, Result result) {
+            Bundle bundle = new Bundle();
+            for (Map.Entry<String, String> entry : eventParams.entrySet()) {
+                bundle.putString(entry.getKey(), entry.getValue());
+            }
+            logger.logEvent(eventName, bundle);
+            result.success(null);
         }
     }
 }

@@ -74,6 +74,10 @@
     [self logOut:result];
   } else if ([@"getCurrentAccessToken" isEqualToString:call.method]) {
     [self getCurrentAccessToken:result];
+  } else if ([@"logEvent" isEqualToString:call.method]) {
+    NSString *eventName = call.arguments[@"name"];
+    NSDictionary *eventParams = call.arguments[@"params"];
+    [self logEvent:eventName eventParams:eventParams result:result];
   } else {
     result(FlutterMethodNotImplemented);
   }
@@ -137,6 +141,13 @@
   NSDictionary *mappedToken = [self accessTokenToMap:currentToken];
 
   result(mappedToken);
+}
+
+- (void)logEvent:(NSString *)eventName
+     eventParams:(NSDictionary *)eventParams
+          result:(FlutterResult)result {
+    [FBSDKAppEvents logEvent:eventName parameters:eventParams];
+    result(nil);
 }
 
 - (void)handleLoginResult:(FBSDKLoginManagerLoginResult *)loginResult

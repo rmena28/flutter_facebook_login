@@ -185,6 +185,17 @@ class FacebookLogin {
   Future<T> _deliverResult<T>(T result) {
     return Future.delayed(const Duration(milliseconds: 500), () => result);
   }
+
+  Future<void> logEvent(
+      String name,
+      Map<String, String> params,
+  ) async {
+    final Map<dynamic, dynamic> result =
+    await channel.invokeMethod('logEvent', {
+      'name': name,
+      'params': params,
+    });
+  }
 }
 
 /// Different behaviors for controlling how the Facebook Login dialog should
