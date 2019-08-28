@@ -81,6 +81,8 @@
   } else if ([@"setUserId" isEqualToString:call.method]) {
     NSString *userId = call.arguments[@"userId"];
     [self setUserId:userId result:result];
+  } else if ([@"clearUserId" isEqualToString:call.method]) {
+    [self clearUserId:result];
   } else {
     result(FlutterMethodNotImplemented);
   }
@@ -145,14 +147,19 @@
 - (void)logEvent:(NSString *)eventName
      eventParams:(NSDictionary *)eventParams
           result:(FlutterResult)result {
-    [FBSDKAppEvents logEvent:eventName parameters:eventParams];
-    result(nil);
+  [FBSDKAppEvents logEvent:eventName parameters:eventParams];
+  result(nil);
 }
 
 - (void)setUserId:(NSString *)userId
-          result:(FlutterResult)result {
-    [FBSDKAppEvents setUserID:userId];
-    result(nil);
+        result:(FlutterResult)result {
+  [FBSDKAppEvents setUserID:userId];
+  result(nil);
+}
+
+- (void)clearUserId:(FlutterResult)result {
+  [FBSDKAppEvents clearUserID];
+  result(nil);
 }
 
 - (void)handleLoginResult:(FBSDKLoginManagerLoginResult *)loginResult

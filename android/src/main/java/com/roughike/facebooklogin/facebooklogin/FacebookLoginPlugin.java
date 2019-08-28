@@ -28,6 +28,7 @@ public class FacebookLoginPlugin implements MethodCallHandler {
     private static final String METHOD_GET_CURRENT_ACCESS_TOKEN = "getCurrentAccessToken";
     private static final String METHOD_LOG_EVENT = "logEvent";
     private static final String METHOD_SET_USER_ID = "setUserId";
+    private static final String METHOD_CLEAR_USER_ID = "clearUserId";
 
     private static final String ARG_LOGIN_BEHAVIOR = "behavior";
     private static final String ARG_PERMISSIONS = "permissions";
@@ -86,6 +87,9 @@ public class FacebookLoginPlugin implements MethodCallHandler {
             case METHOD_SET_USER_ID:
                 String userId = call.argument(ARG_USER_ID);
                 delegate.setUserId(userId, result);
+                break;
+            case METHOD_CLEAR_USER_ID:
+                delegate.clearUserId(result);
                 break;
             default:
                 result.notImplemented();
@@ -178,6 +182,11 @@ public class FacebookLoginPlugin implements MethodCallHandler {
 
         public void setUserId(String userId, Result result) {
             AppEventsLogger.setUserID(userId);
+            result.success(null);
+        }
+
+        public void clearUserId(Result result) {
+            AppEventsLogger.clearUserID();
             result.success(null);
         }
     }

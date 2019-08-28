@@ -199,6 +199,8 @@ class FacebookLogin {
   ) => channel.invokeMethod('setUserId', {
       'userId': userId,
     });
+
+  Future<void> clearUserId() => channel.invokeMethod('clearUserId');
 }
 
 /// Different behaviors for controlling how the Facebook Login dialog should
