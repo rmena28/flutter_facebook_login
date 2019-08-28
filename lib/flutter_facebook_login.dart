@@ -190,10 +190,17 @@ class FacebookLogin {
       String name,
       Map<String, String> params,
   ) async {
-    final Map<dynamic, dynamic> result =
     await channel.invokeMethod('logEvent', {
       'name': name,
       'params': params,
+    });
+  }
+
+  Future<void> setUserId(
+      String userId,
+  ) async {
+    await channel.invokeMethod('setUserId', {
+      'userId': userId,
     });
   }
 }
