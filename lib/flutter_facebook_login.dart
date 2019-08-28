@@ -188,21 +188,17 @@ class FacebookLogin {
 
   Future<void> logEvent(
       String name,
-      Map<String, String> params,
-  ) async {
-    await channel.invokeMethod('logEvent', {
+      Map params,
+  ) => channel.invokeMethod('logEvent', {
       'name': name,
       'params': params,
     });
-  }
 
   Future<void> setUserId(
       String userId,
-  ) async {
-    await channel.invokeMethod('setUserId', {
+  ) => channel.invokeMethod('setUserId', {
       'userId': userId,
     });
-  }
 }
 
 /// Different behaviors for controlling how the Facebook Login dialog should
