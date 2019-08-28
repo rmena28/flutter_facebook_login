@@ -87,13 +87,9 @@
 }
 
 - (FBSDKLoginBehavior)loginBehaviorFromString:(NSString *)loginBehaviorStr {
-  if ([@[ @"nativeWithFallback", @"nativeOnly" ]
+  if ([@[ @"nativeWithFallback", @"nativeOnly", @"webViewOnly", @"webOnly" ]
           containsObject:loginBehaviorStr]) {
-    return FBSDKLoginBehaviorNative;
-  } else if ([@"webOnly" isEqualToString:loginBehaviorStr]) {
     return FBSDKLoginBehaviorBrowser;
-  } else if ([@"webViewOnly" isEqualToString:loginBehaviorStr]) {
-    return FBSDKLoginBehaviorWeb;
   } else {
     NSString *message = [NSString
         stringWithFormat:@"Unknown login behavior: %@", loginBehaviorStr];
@@ -109,7 +105,7 @@
                           result:(FlutterResult)result {
   [loginManager setLoginBehavior:behavior];
   [loginManager
-      logInWithReadPermissions:permissions
+      logInWithPermissions:permissions
             fromViewController:nil
                        handler:^(FBSDKLoginManagerLoginResult *loginResult,
                                  NSError *error) {
@@ -124,7 +120,7 @@
                              result:(FlutterResult)result {
   [loginManager setLoginBehavior:behavior];
   [loginManager
-      logInWithPublishPermissions:permissions
+      logInWithPermissions:permissions
                fromViewController:nil
                           handler:^(FBSDKLoginManagerLoginResult *loginResult,
                                     NSError *error) {
