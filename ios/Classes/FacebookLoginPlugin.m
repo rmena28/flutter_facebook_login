@@ -78,6 +78,9 @@
     NSString *eventName = call.arguments[@"name"];
     NSDictionary *eventParams = call.arguments[@"params"];
     [self logEvent:eventName eventParams:eventParams result:result];
+  } else if ([@"setUserId" isEqualToString:call.method]) {
+    NSString *userId = call.arguments[@"userId"];
+    [self setUserId:userId result:result];
   } else {
     result(FlutterMethodNotImplemented);
   }
@@ -147,6 +150,12 @@
      eventParams:(NSDictionary *)eventParams
           result:(FlutterResult)result {
     [FBSDKAppEvents logEvent:eventName parameters:eventParams];
+    result(nil);
+}
+
+- (void)setUserId:(NSString *)userId
+          result:(FlutterResult)result {
+    [FBSDKAppEvents setUserID:userId];
     result(nil);
 }
 

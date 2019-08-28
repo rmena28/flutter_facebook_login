@@ -27,11 +27,13 @@ public class FacebookLoginPlugin implements MethodCallHandler {
     private static final String METHOD_LOG_OUT = "logOut";
     private static final String METHOD_GET_CURRENT_ACCESS_TOKEN = "getCurrentAccessToken";
     private static final String METHOD_LOG_EVENT = "logEvent";
+    private static final String METHOD_SET_USER_ID = "setUserId";
 
     private static final String ARG_LOGIN_BEHAVIOR = "behavior";
     private static final String ARG_PERMISSIONS = "permissions";
     private static final String ARG_EVENT_NAME = "name";
     private static final String ARG_EVENT_PARAMS = "params";
+    private static final String ARG_USER_ID = "userId";
 
     private static final String LOGIN_BEHAVIOR_NATIVE_WITH_FALLBACK = "nativeWithFallback";
     private static final String LOGIN_BEHAVIOR_NATIVE_ONLY = "nativeOnly";
@@ -80,6 +82,10 @@ public class FacebookLoginPlugin implements MethodCallHandler {
                 String eventName = call.argument(ARG_EVENT_NAME);
                 Map<String, Object> eventParams = call.argument(ARG_EVENT_PARAMS);
                 delegate.logEvent(eventName, eventParams, result);
+                break;
+            case METHOD_SET_USER_ID:
+                String userId = call.argument(ARG_USER_ID);
+                delegate.setUserId(userId, result);
                 break;
             default:
                 result.notImplemented();
@@ -167,6 +173,11 @@ public class FacebookLoginPlugin implements MethodCallHandler {
                 }
             }
             logger.logEvent(eventName, bundle);
+            result.success(null);
+        }
+
+        public void setUserId(String userId, Result result) {
+            AppEventsLogger.setUserID(userId);
             result.success(null);
         }
     }
