@@ -203,9 +203,9 @@ class FacebookLogin {
   Future<void> clearUserId() => channel.invokeMethod('clearUserId');
 
   Future<void> setDebugMode(
-    String userId,
+    bool isDebugMode,
   ) => channel.invokeMethod('setDebugMode', {
-        'isDebugMode': userId,
+        'isDebugMode': isDebugMode,
       });
 
 }
