@@ -187,20 +187,27 @@ class FacebookLogin {
   }
 
   Future<void> logEvent(
-      String name,
-      Map params,
+    String name,
+    Map params,
   ) => channel.invokeMethod('logEvent', {
       'name': name,
       'params': params,
     });
 
   Future<void> setUserId(
-      String userId,
+    String userId,
   ) => channel.invokeMethod('setUserId', {
       'userId': userId,
     });
 
   Future<void> clearUserId() => channel.invokeMethod('clearUserId');
+
+  Future<void> setDebugMode(
+    String userId,
+  ) => channel.invokeMethod('setDebugMode', {
+        'isDebugMode': userId,
+      });
+
 }
 
 /// Different behaviors for controlling how the Facebook Login dialog should

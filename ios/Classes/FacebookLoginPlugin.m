@@ -83,6 +83,9 @@
     [self setUserId:userId result:result];
   } else if ([@"clearUserId" isEqualToString:call.method]) {
     [self clearUserId:result];
+  } else if ([@"setDebugMode" isEqualToString:call.method]) {
+    NSNumber *isDebugMode = call.arguments[@"isDebugMode"];
+    [self setDebugMode:isDebugMode result:result];
   } else {
     result(FlutterMethodNotImplemented);
   }
@@ -152,13 +155,23 @@
 }
 
 - (void)setUserId:(NSString *)userId
-        result:(FlutterResult)result {
+           result:(FlutterResult)result {
   [FBSDKAppEvents setUserID:userId];
   result(nil);
 }
 
 - (void)clearUserId:(FlutterResult)result {
   [FBSDKAppEvents clearUserID];
+  result(nil);
+}
+
+- (void)setDebugMode:(NSNumber *)isDebugMode
+              result:(FlutterResult)result {
+  if ([isDebugMode boolValue]) {
+    [FBSDKSettings enableLoggingBehavior:FBSDKLoggingBehaviorAppEvents];
+  } else {
+    [FBSDKSettings disableLoggingBehavior:FBSDKLoggingBehaviorAppEvents];
+  }
   result(nil);
 }
 

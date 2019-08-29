@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.LoggingBehavior;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
@@ -29,12 +31,14 @@ public class FacebookLoginPlugin implements MethodCallHandler {
     private static final String METHOD_LOG_EVENT = "logEvent";
     private static final String METHOD_SET_USER_ID = "setUserId";
     private static final String METHOD_CLEAR_USER_ID = "clearUserId";
+    private static final String METHOD_SET_DEBUG_MODE = "setDebugMode";
 
     private static final String ARG_LOGIN_BEHAVIOR = "behavior";
     private static final String ARG_PERMISSIONS = "permissions";
     private static final String ARG_EVENT_NAME = "name";
     private static final String ARG_EVENT_PARAMS = "params";
     private static final String ARG_USER_ID = "userId";
+    private static final String ARG_IS_DEBUG_MODE = "isDebugMode";
 
     private static final String LOGIN_BEHAVIOR_NATIVE_WITH_FALLBACK = "nativeWithFallback";
     private static final String LOGIN_BEHAVIOR_NATIVE_ONLY = "nativeOnly";
@@ -90,6 +94,10 @@ public class FacebookLoginPlugin implements MethodCallHandler {
                 break;
             case METHOD_CLEAR_USER_ID:
                 delegate.clearUserId(result);
+                break;
+            case METHOD_SET_DEBUG_MODE:
+                Boolean isDebugMode = call.argument(ARG_IS_DEBUG_MODE);
+                delegate.setDebugMode(isDebugMode);
                 break;
             default:
                 result.notImplemented();
@@ -188,6 +196,15 @@ public class FacebookLoginPlugin implements MethodCallHandler {
         public void clearUserId(Result result) {
             AppEventsLogger.clearUserID();
             result.success(null);
+        }
+
+        public void setDebugMode(Boolean isDebugMode) {
+            FacebookSdk.setIsDebugEnabled(isDebugMode);
+            if (isDebugMode) {
+                FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
+            } else {
+                FacebookSdk.removeLoggingBehavior(LoggingBehavior.APP_EVENTS);
+            }
         }
     }
 }
